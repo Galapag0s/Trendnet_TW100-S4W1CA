@@ -1,0 +1,9 @@
+CSRF VULNERABILITY
+
+While reviewing the router's web interface I found the system fails to implement any anti-csrf tokens. This could allow for arbitrary changes to the system if a logged in user were to request a specially crafted URL. Attached is a sample payload which would allow an outside attacker to take complete control of a router, if a logged in admin user loaded the HTML. (Please note, the extension must be changed to .html).
+
+While this payload makes use of image tags, these only function to initiate a GET request to the router. In this particular payload, three requests are sent. The first request sets the allowed remote IP to 0.0.0.0. The second request enables the remote management interface. The third request changes the admin user's password to admin1.
+
+If a threat actor was able to distribute this HTML in an effective manner (through a watering hole attack or targeted phishing), a threat actor could easily take remote control of the router, locking out the device owner.
+
+This issue can be remediated by implementing CSRF tokens. However, for this solution to remain effective, the previously mentioned XSS vulnerability would also need to be patched.
