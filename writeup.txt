@@ -1,0 +1,29 @@
+Hello,
+
+I am a security researcher and recently began looking at the TW100-S4W1CA home router. While working with the router I uncovered several vulnerabilities which I wanted to report. These included a reflected cross site scripting (XSS) vulnerability and a cross site request forgery (CSRF) vulnerability.
+
+XSS VULNERABILITY
+
+While observing traffic sent to the “cli.cgi” file, I found it was possible to inject arbitrary JavaScript into the router's web interface via the "echo" command. The below URL functions as a proof of concept.
+
+PAYLOAD
+
+http://192.168.10.1/cli.cgi?cmd=echo%20%3Cscript%3Ealert(1)%3C/script%3E%;
+
+If the above URL was loaded by a logged in user, either through a phishing attack, or some other vector, a threat actor could execute arbitrary JavaScript in the user's browser, This could allow for potentially unauthorized changes.
+
+To remediate this, input echoed back to the user should be escaped.
+
+CSRF VULNERABILITY
+
+The second vulnerability is a CSRF vulnerability. While reviewing the router's web interface I found the system fails to implement any anti-csrf tokens. This could allow for arbitrary changes to the system if a logged in user were to request a specially crafted URL. Attached is a sample payload which would allow an outside attacker to take complete control of a router, if a logged in admin user loaded the HTML. (Please note, the extension must be changed to .html).
+
+While this payload makes use of image tags, these only function to initiate a GET request to the router. In this particular payload, three requests are sent. The first request sets the allowed remote IP to 0.0.0.0. The second request enables the remote management interface. The third request changes the admin user's password to admin1.
+
+If a threat actor was able to distribute this HTML in an effective manner (through a watering hole attack or targeted phishing), a threat actor could easily take remote control of the router, locking out the device owner.
+
+This issue can be remediated by implementing CSRF tokens. However, for this solution to remain effective, the previously mentioned XSS vulnerability would also need to be patched.
+
+Please let me know if you have any questions, or require any assistance.
+
+I look forward to hearing from you.
