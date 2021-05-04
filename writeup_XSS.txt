@@ -1,0 +1,12 @@
+XSS VULNERABILITY
+
+While observing traffic sent to the “cli.cgi” file, I found it was possible to inject arbitrary JavaScript into the router's web interface via the "echo" command. The below URL functions as a proof of concept.
+
+PAYLOAD
+
+http://192.168.10.1/cli.cgi?cmd=echo%20%3Cscript%3Ealert(1)%3C/script%3E%;
+
+If the above URL was loaded by a logged in user, either through a phishing attack, or some other vector, a threat actor could execute arbitrary JavaScript in the user's browser, This could allow for potentially unauthorized changes.
+
+To remediate this, input echoed back to the user should be escaped.
+
